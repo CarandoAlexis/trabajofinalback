@@ -33,6 +33,16 @@ class MongoProductManager {
     }
   }
 
+  async getProductById(productId) {
+    try {
+      const product = await ProductModel.findById(productId);
+      return product;
+    } catch (error) {
+      console.error("Error al obtener el producto por ID:", error);
+      throw error;
+    }
+  }
+
   async editProduct(productId, updatedProductData) {
     try {
       await ProductModel.findByIdAndUpdate(productId, updatedProductData);

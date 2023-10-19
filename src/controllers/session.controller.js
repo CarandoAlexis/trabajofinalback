@@ -60,9 +60,12 @@ class SessionController {
   
       if (!existingCart) {
         // Si no hay carrito, crear uno para el usuario
-        await CartService.createCartForUser(findUser._id);
+        await CartService.createCartForUser(findUser._id, findUser.email);
       }
-  
+      
+      findUser.last_connection = new Date();
+      await findUser.save();
+
       // Establece el usuario en la sesión
       req.session.user = {
         ...findUser.toObject(),
@@ -81,6 +84,12 @@ class SessionController {
   
   async logout(req, res) {
     try {
+        const userId = req.session.user.id;
+        const user = await userModel.findById(userId);
+        if (user) {
+            user.last_connection = new Date();
+            await user.save();
+        }
         req.session.destroy((err) => {
           if (err) {
             console.error("Error al cerrar sesión:", err);
@@ -157,8 +166,16 @@ class SessionController {
             viewName = 'admin-current';
           } else if (user.role === 'usuario') {
             viewName = 'user-current';
+          } else if (user.role === 'premium') {
+            viewName = 'premium-current';
           }
-  
+          
+            // Itera sobre los productos y configura isOwner
+          for (const product of products) {
+            // Verifica si el usuario autenticado es el propietario del producto
+            product.isOwner = user.email === product.owner;
+          }
+
           res.render(viewName, { 
             first_name: user.first_name,
             last_name: user.last_name,

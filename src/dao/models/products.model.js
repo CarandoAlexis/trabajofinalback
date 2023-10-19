@@ -21,6 +21,11 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  owner: {
+    type: String,
+    required: true,
+    default: "admin"
+  }
 });
 
 const Product = mongoose.model("products", productSchema);

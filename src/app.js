@@ -20,6 +20,7 @@ import loggerTestRouter from './routes/loggerTest.router.js'
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from "swagger-ui-express";
 import swaggerOpts from "./config/swagger.config.js";
+import usersRouter from './routes/users.router.js'; 
 
 console.log("Mongo URL app.js:", mongoUrl);
 
@@ -71,6 +72,9 @@ app.use("/api/products", productsRouter);
 app.use("/api/session/", sessionRouter);
 app.use("/loggerTest", loggerTestRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api/users', usersRouter);
+
+
 
 // Redirección a la página de registro por defecto
 app.get("/", (req, res) => {

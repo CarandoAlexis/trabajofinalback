@@ -20,22 +20,41 @@ export const addProduct = async (req, res, next) => {
       error.name = 'InvalidFieldsError';
       throw error;
     }
-    await productService.addProduct({ title, description, price, code, category });
+    let owner;
+    if (req.session?.user) {
+      if (req.session.user.role === "premium") {
+        owner = req.session.user.email;
+      } else if (req.session.user.role === "admin") {
+        owner = "admin";
+      }
+    }
+    console.log("Owner antes de agregar producto:", owner);
+    await productService.addProduct({ title, description, price, code, category }, owner);
     res.status(201).json({ status: "success", message: "Producto agregado exitosamente" });
   } catch (error) {
     next(error);
   }
 };
 
+
 export const editProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     const { title, description, price, code, category } = req.body;
+    const user = req.session.user;
 
-    
-    const updatedProduct = await productService.editProduct(productId, { title, description, price, code, category });
+    const product = await productService.getProductById(productId);
 
-    res.json(updatedProduct);
+    if (!product) {
+      return res.status(404).json({ status: "error", message: "Producto no encontrado" });
+    }
+
+    if (user.role === 'admin' || user.email === product.owner) {
+      const updatedProduct = await productService.editProduct(productId, { title, description, price, code, category });
+      return res.json(updatedProduct);
+    } else {
+      return res.status(403).json({ status: "error", message: "No tienes permisos para editar este producto" });
+    }
   } catch (error) {
     console.error("Error al editar el producto:", error);
     res.status(500).json({ status: "error", message: "Error al editar el producto" });
@@ -45,8 +64,20 @@ export const editProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    await productService.deleteProduct(id);
-    res.json({ status: "success", message: "Producto eliminado exitosamente" });
+    const { user } = req.session;
+
+    const product = await productService.getProductById(id);
+
+    if (!product) {
+      return res.status(404).json({ status: "error", message: "Producto no encontrado" });
+    }
+
+    if (user.role === 'admin' || (user.role === 'premium' && user.email === product.owner)) {
+      await productService.deleteProduct(id);
+      res.json({ status: "success", message: "Producto eliminado exitosamente" });
+    } else {
+      res.status(403).json({ status: "error", message: "No tienes permisos para eliminar este producto" });
+    }
   } catch (error) {
     console.error("Error al eliminar el producto:", error);
     res.status(500).json({ status: "error", message: "Error al eliminar el producto" });

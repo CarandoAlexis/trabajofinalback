@@ -39,6 +39,8 @@ router.get("/github/callback", sessionController.githubAuthenticationCallback);
 
 router.get("/current", authMdw , sessionController.getCurrentUserDTO);
 
+
+
 export default router;
 
 

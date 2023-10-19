@@ -16,4 +16,13 @@ const checkUserRole = (req, res, next) => {
     next();
 };
 
-export { checkAdminRole, checkUserRole };
+const checkPremiumRole = (req, res, next) => {
+    if (req.session.user && req.session.user.role === "premium") {
+        return res
+            .status(403)
+            .json({ status: "error", message: "Acceso denegado para este rol" });
+    }
+    next();
+};
+
+export { checkAdminRole, checkUserRole , checkPremiumRole };

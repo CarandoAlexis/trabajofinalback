@@ -1,5 +1,7 @@
 import ProductDTO from '../dto/products.dto.js';
 import ProductRepository from '../repositories/products.repository.js';
+import ProductModel from "../dao/models/products.model.js";
+
 
 class ProductService {
   constructor() {
@@ -17,8 +19,20 @@ class ProductService {
     return filteredProducts;
   }
 
-  async addProduct({ title, description, price, code, category }) {
-    const productDTO = new ProductDTO({ title, description, price, code, category });
+  async getProductById(productId) {
+    try {
+      const product = await ProductModel.findById(productId);
+      if (!product) {
+        return null;
+      }
+      return product;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addProduct({ title, description, price, code, category }, owner) {
+    const productDTO = new ProductDTO({ title, description, price, code, category, owner });
     await this.repository.addProduct(productDTO);
   }
 

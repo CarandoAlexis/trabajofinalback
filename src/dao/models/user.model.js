@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   role: {
     type: String,
-    enum: ["admin", "usuario"],
+    enum: ["admin", "usuario", "premium"],
     default: "usuario",
   },
   githubId: {
@@ -19,8 +19,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  documents: [
+    {
+      name: String,
+      reference: String,
+    },
+  ],
+  last_connection: Date,
 });
 
-const userModel = mongoose.model("sessions", userSchema);
+const userModel = mongoose.model("users", userSchema);
 
 export default userModel;

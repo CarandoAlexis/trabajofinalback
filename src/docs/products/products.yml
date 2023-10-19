@@ -1,0 +1,106 @@
+openapi: 3.0.0
+info:
+  title: API de Productos
+  version: 1.0.0
+paths:
+  /api/products:
+    get:
+      summary: Obtiene la lista de productos
+      responses:
+        "200":
+          description: Respuesta exitosa
+          content:
+            application/json:
+              example:
+                - title: Producto 1
+                  description: Descripción del Producto 1
+                  price: 1000
+                  code: P1
+                  category: Categoría 1
+                - title: Producto 2
+                  description: Descripción del Producto 2
+                  price: 1500
+                  code: P2
+                  category: Categoría 2
+        "401":
+          description: No autorizado
+    post:
+      summary: Agregar un nuevo producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                code:
+                  type: string
+                category:
+                  type: string
+              example:
+                title: Producto de Ejemplo
+                description: Descripción del Producto de Ejemplo
+                price: 999
+                code: P999
+                category: Categoría de Ejemplo
+      responses:
+        "201":
+          description: Producto agregado exitosamente
+          content:
+            application/json:
+              example:
+                title: Producto de Ejemplo
+                description: Descripción del Producto de Ejemplo
+                price: 999
+                code: P999
+                category: Categoría de Ejemplo
+        "401":
+          description: No autorizado
+  /api/products/edit/{id}:
+    put:
+      summary: Edita un producto existente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del producto a editar
+      responses:
+        "200":
+          description: Producto editado exitosamente
+        "401":
+          description: No autorizado
+        "404":
+          description: Producto no encontrado
+  /api/products/delete/{id}:
+    delete:
+      summary: Elimina un producto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del producto a eliminar
+      responses:
+        "204":
+          description: Producto eliminado exitosamente
+        "401":
+          description: No autorizado
+        "404":
+          description: Producto no encontrado
+  /api/products/mockingproducts:
+    get:
+      summary: Genera productos simulados
+      responses:
+        "200":
+          description: Productos simulados generados exitosamente
+        "401":
+          description: No autorizado

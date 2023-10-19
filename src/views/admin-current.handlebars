@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opciones para Administrador</title>
+</head>
+
+<body>
+    <h1>Lista de productos</h1>
+    <p>Bienvenido/a, {{this.first_name}} {{this.last_name}}. Tu rol es: {{this.role}}</p>
+    <p> Aquí tienes la lista de productos:</p>
+    <ul>
+        {{#each products}}
+        <li id="product-{{_id}}">
+            <h3 class="product-title">{{title}}</h3>
+            <p class="product-description">{{description}}</p>
+            <p class="product-price">Precio: {{price}}</p>
+            <p class="product-code">Código: {{code}}</p>
+            <p class="product-category">Categoría: {{category}}</p>
+
+            <form onsubmit="editProduct('{{_id}}')">
+                <label for="title-{{_id}}">Título:</label>
+                <input type="text" id="title-{{_id}}" name="title" value="{{title}}">
+                <label for="description-{{_id}}">Descripción:</label>
+                <input type="text" id="description-{{_id}}" name="description" value="{{description}}">
+                <label for="price-{{_id}}">Precio:</label>
+                <input type="number" id="price-{{_id}}" name="price" value="{{price}}">
+                <label for="code-{{_id}}">Código:</label>
+                <input type="text" id="code-{{_id}}" name="code" value="{{code}}">
+                <label for="category-{{_id}}">Categoría:</label>
+                <input type="text" id="category-{{_id}}" name="category" value="{{category}}">
+                <button type="submit">Guardar Cambios</button>
+            </form>
+
+            <button onclick="deleteProduct('{{_id}}')">Eliminar</button>
+
+        </li>
+        {{/each}}
+    </ul>
+    <div>
+        <h2>Agregar Nuevo Producto</h2>
+        <form onsubmit="addNewProduct(event)">
+            <label for="new-title">Título:</label>
+            <input type="text" id="new-title" name="title" required>
+            <label for="new-description">Descripción:</label>
+            <input type="text" id="new-description" name="description" required>
+            <label for="new-price">Precio:</label>
+            <input type="number" id="new-price" name="price" step="0.01" required>
+            <label for="new-code">Código:</label>
+            <input type="text" id="new-code" name="code" required>
+            <label for="new-category">Categoría:</label>
+            <input type="text" id="new-category" name="category" required>
+            <button type="submit">Agregar Producto</button>
+        </form>
+    </div>
+
+    <div>
+        <form action="/api/session/logout" method="get">
+            <p>
+                <button type="submit">Cerrar Sesión</button>
+            </p>
+        </form>
+    </div>
+
+    <script src="/js/admin-current.js"></script>
+</body>
+
+</html>

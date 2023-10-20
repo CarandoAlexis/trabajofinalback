@@ -1,4 +1,5 @@
 import ProductService from '../services/products.service.js';
+import { sendEmail } from './email.controller.js';
 
 const productService = new ProductService();
 
@@ -73,8 +74,12 @@ export const deleteProduct = async (req, res) => {
     }
 
     if (user.role === 'admin' || (user.role === 'premium' && user.email === product.owner)) {
+      const userEmail = product.owner;
       await productService.deleteProduct(id);
-      res.json({ status: "success", message: "Producto eliminado exitosamente" });
+      const subject = 'Eliminación de producto';
+      const text = 'Tu producto ha sido eliminado.';
+      sendEmail(userEmail, subject, text);
+      res.json({ status: "success", message: "Producto eliminado" });
     } else {
       res.status(403).json({ status: "error", message: "No tienes permisos para eliminar este producto" });
     }

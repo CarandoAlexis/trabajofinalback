@@ -42,7 +42,7 @@ async function deleteProduct(productId) {
         if (response.ok) {
             const deletedProductData = await response.json();
             const productContainer = document.getElementById(`product-${productId}`);
-            productContainer.remove(); // Eliminar el elemento de la lista
+            productContainer.remove();
         } else {
             console.error('Error al eliminar el producto:', response.statusText);
         }

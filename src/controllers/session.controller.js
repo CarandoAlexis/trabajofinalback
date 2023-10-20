@@ -106,44 +106,46 @@ class SessionController {
 
   async githubAuthenticationCallback(req, res) {
     try {
-        passport.authenticate("github", { failureRedirect: "/login" })(req, res, async () => {
-          try {
-            const githubUser = req.user;
-            // Verifica si el usuario existe en la base de datos a través del githubId
-            let findUser = await userModel.findOne({ githubId: githubUser.id });
-            if (!findUser) {
-              // Si el usuario no existe en la base de datos, crea uno nuevo con los datos de GitHub
-              findUser = await userModel.create({
-                githubId: githubUser.id,
-                username: githubUser.username,
-              });
-            }
-            // Establece la sesión del usuario
-            req.session.user = {
-              ...findUser.toObject(),
-              password: "",
-            };
+      passport.authenticate("github", { failureRedirect: "/login" })(req, res, async () => {
+        try {
+          const githubUser = req.user;
+          let findUser = await userModel.findOne({ githubId: githubUser.id });
   
-            console.log("Usuario establecido en la sesión:", req.session.user);
-  
-            // Para obtener todos los productos
-            const products = await Product.find().lean();
-  
-            // Renderiza la vista de perfil con los datos del usuario y los productos
-            return res.render("profile", {
-              role: findUser.role,
-              username: findUser.username,
-              products,
+          if (!findUser) {
+            // Utiliza el `username` como si fuera el correo electrónico
+            findUser = await userModel.create({
+              githubId: githubUser.id,
+              email: githubUser.username, // Asigna el username de GitHub como el correo electrónico
             });
-          } catch (error) {
-            console.error("Error al obtener los datos del usuario:", error);
-            res.status(500).json({ status: "error", message: "Error al obtener los datos del usuario" });
+  
+            // Asignar un carrito al nuevo usuario basado en su nombre de usuario (username)
+            const existingCart = await CartRepository.findCartByUserId(githubUser.username);
+            if (!existingCart) {
+              await CartService.createCartForUser(githubUser.username, githubUser.username); // Usa el nombre de usuario como identificador
+            }
           }
-        });
-      } catch (error) {
-        console.error("Error en el callback de autenticación:", error);
-        res.status(500).json({ status: "error", message: "Error en el callback de autenticación" });
-      }
+  
+          if (req.session.user) {
+            return res.redirect("current");
+          }
+  
+          req.session.user = {
+            ...findUser.toObject(),
+            password: "",
+          };
+  
+          console.log("Usuario establecido en la sesión:", req.session.user);
+  
+          return res.redirect("current");
+        } catch (error) {
+          console.error("Error al obtener los datos del usuario:", error);
+          res.status(500).json({ status: "error", message: "Error al obtener los datos del usuario" });
+        }
+      });
+    } catch (error) {
+      console.error("Error en el callback de autenticación:", error);
+      res.status(500).json({ status: "error", message: "Error en el callback de autenticación" });
+    }
   }
   
   async getCurrentUserDTO(req, res) {

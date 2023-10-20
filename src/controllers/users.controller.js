@@ -68,3 +68,14 @@ export const uploadIdentification = async (req, res) => {
     return res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await UserModel.find({}, 'first_name last_name email role');
+
+    return res.json(users);
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};

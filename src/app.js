@@ -28,12 +28,11 @@ const app = express();
 
 const swaggerSpec = swaggerJSDoc(swaggerOpts);
 
-// Configuración de conexión a MongoDB
 mongoose.connect(mongoUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-// Configuración de la sesión
+
 app.use(
   session({
     store: mongoStore.create({
@@ -50,7 +49,7 @@ app.use(
   })
 );
 
-// Inicialización de Passport
+
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
@@ -76,23 +75,21 @@ app.use('/api/users', usersRouter);
 
 
 
-// Redirección a la página de registro por defecto
 app.get("/", (req, res) => {
   res.redirect("/register");
 });
 
-// Ruta protegida para la lista de productos
+
 app.use("/products", authMdw, (req, res, next) => {
   return res.render("productList");
 });
 
 app.use(errorHandler);
 
-// Iniciar el servidor
+
 const mode = process.env.NODE_ENV || "development";
 const port = mode === "development" ? 8080 : 3000;
 app.listen(port, () => {
   displayRoutes(app);
-  //console.log(`Server listening on port ${port}`);
   logger.info(`Server listening on port ${port}`);
 });

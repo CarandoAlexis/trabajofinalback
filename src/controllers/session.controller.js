@@ -21,7 +21,6 @@ class SessionController {
         age,
       };
   
-      // Verificar si el usuario registrado debe ser un administrador
       if (email === 'adminCoder@coder.com' && password === 'admin') {
         userToAdd.role = 'admin';
       } else {
@@ -55,18 +54,16 @@ class SessionController {
         return res.status(401).json({ message: "Contraseña incorrecta" });
       }
   
-      // Verifica si el usuario ya tiene un carrito
       const existingCart = await CartRepository.findCartByUserId(findUser._id);
   
       if (!existingCart) {
-        // Si no hay carrito, crear uno para el usuario
         await CartService.createCartForUser(findUser._id, findUser.email);
       }
       
       findUser.last_connection = new Date();
       await findUser.save();
 
-      // Establece el usuario en la sesión
+      
       req.session.user = {
         ...findUser.toObject(),
         password: "",
@@ -74,7 +71,6 @@ class SessionController {
   
       console.log("Usuario establecido en la sesión:", req.session.user);
     
-      // Redireccion a current
       return res.redirect("current");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);

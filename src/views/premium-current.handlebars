@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Usuario Premium</title>
 </head>
+
 <body>
     <h1>Bienvenido, {{this.first_name}} {{this.last_name}} (Usuario Premium)</h1>
 
@@ -15,10 +17,24 @@
             <h3>{{title}}</h3>
             <p>{{description}}</p>
             <p>Precio: {{price}}</p>
+            <p>Código: {{code}}</p>
+            <p>Categoría: {{category}}</p>
             <input type="number" id="quantity-{{_id}}" min="1" value="1">
             <button onclick="addProductToCart('{{_id}}')">Agregar al Carrito</button>
             {{#if isOwner}}
-            <button onclick="editProduct('{{_id}}')">Editar Producto</button>
+            <form onsubmit="editProduct('{{_id}}')">
+                <label for="title-{{_id}}">Título:</label>
+                <input type="text" id="title-{{_id}}" name="title" value="{{title}}">
+                <label for="description-{{_id}}">Descripción:</label>
+                <input type="text" id="description-{{_id}}" name="description" value="{{description}}">
+                <label for="price-{{_id}}">Precio:</label>
+                <input type="number" id="price-{{_id}}" name="price" value="{{price}}">
+                <label for="code-{{_id}}">Código:</label>
+                <input type="text" id="code-{{_id}}" name="code" value="{{code}}">
+                <label for="category-{{_id}}">Categoría:</label>
+                <input type="text" id="category-{{_id}}" name="category" value="{{category}}">
+                <button type="submit">Guardar Cambios</button>
+            </form>
             <button onclick="deleteProduct('{{_id}}')">Eliminar Producto</button>
             {{/if}}
         </li>
@@ -28,8 +44,9 @@
 
     <h2>Carrito de Compras</h2>
     <div id="cart-content">
-        <!-- Contenido del carrito se mostrará aquí -->
     </div>
+
+    <button onclick="purchaseCart('{{cartId}}')">Comprar</button>
 
     <div>
         <h2>Agregar Nuevo Producto</h2>
@@ -56,168 +73,170 @@
 
     <script>
         async function updateCartView() {
-    try {
-      const response = await fetch(`/api/cart/{{cartId}}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+            try {
+                const response = await fetch(`/api/cart/{{cartId}}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-      if (response.ok) {
-        const data = await response.json();
-        const cartContentDiv = document.getElementById('cart-content');
-
-
-        cartContentDiv.innerHTML = '';
+                if (response.ok) {
+                    const data = await response.json();
+                    const cartContentDiv = document.getElementById('cart-content');
 
 
-        data.cart.products.forEach(product => {
-          const productInfo = `
+                    cartContentDiv.innerHTML = '';
+
+
+                    data.cart.products.forEach(product => {
+                        const productInfo = `
             <p>Producto: ${product.productId.title} - Cantidad: ${product.quantity}</p>
           `;
-          cartContentDiv.innerHTML += productInfo;
-        });
-      } else {
-        console.error('Error al obtener el contenido del carrito:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error al obtener el contenido del carrito:', error);
-    }
-  }
-
-
-  window.addEventListener('DOMContentLoaded', updateCartView);
-
-  async function addProductToCart(productId) {
-    try {
-      const quantityInput = document.getElementById(`quantity-${productId}`);
-      const quantity = parseInt(quantityInput.value, 10);
-
-      const response = await fetch(`/api/cart/{{cartId}}/add/${productId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ quantity }),
-      });
-
-      if (response.ok) {
-        console.log('Producto(s) agregado(s) al carrito');
-
-        updateCartView();
-      } else {
-        console.error('Error al agregar producto(s) al carrito:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error al agregar producto(s) al carrito:', error);
-    }
-  }
-  async function editProduct(productId) {
-    const title = document.getElementById(`title-${productId}`).value;
-    const description = document.getElementById(`description-${productId}`).value;
-    const price = document.getElementById(`price-${productId}`).value;
-    const code = document.getElementById(`code-${productId}`).value;
-    const category = document.getElementById(`category-${productId}`).value;
-
-    const updatedProduct = {
-        title,
-        description,
-        price,
-        code,
-        category,
-    };
-
-    try {
-        const response = await fetch(`/api/products/edit/${productId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedProduct),
-        });
-
-        if (response.ok) {
-            const updatedProductData = await response.json();
-            updateProductUI(productId, updatedProductData);
-        } else {
-            console.error('Error al editar el producto:', response.statusText);
+                        cartContentDiv.innerHTML += productInfo;
+                    });
+                } else {
+                    console.error('Error al obtener el contenido del carrito:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al obtener el contenido del carrito:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error al editar el producto:', error);
-    }
-}
 
-async function deleteProduct(productId) {
-    try {
-        const response = await fetch(`/api/products/delete/${productId}`, {
-            method: 'DELETE',
-        });
 
-        if (response.ok) {
-            const deletedProductData = await response.json();
+        window.addEventListener('DOMContentLoaded', updateCartView);
+
+        async function addProductToCart(productId) {
+            try {
+                const quantityInput = document.getElementById(`quantity-${productId}`);
+                const quantity = parseInt(quantityInput.value, 10);
+
+                const response = await fetch(`/api/cart/{{cartId}}/add/${productId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ quantity }),
+                });
+
+                if (response.ok) {
+                    console.log('Producto(s) agregado(s) al carrito');
+
+                    updateCartView();
+                } else {
+                    console.error('Error al agregar producto(s) al carrito:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al agregar producto(s) al carrito:', error);
+            }
+        }
+        async function editProduct(productId) {
+            const title = document.getElementById(`title-${productId}`).value;
+            const description = document.getElementById(`description-${productId}`).value;
+            const price = document.getElementById(`price-${productId}`).value;
+            const code = document.getElementById(`code-${productId}`).value;
+            const category = document.getElementById(`category-${productId}`).value;
+
+            const updatedProduct = {
+                title,
+                description,
+                price,
+                code,
+                category,
+            };
+
+            try {
+                const response = await fetch(`/api/products/edit/${productId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedProduct),
+                });
+
+                if (response.ok) {
+                    const updatedProductData = await response.json();
+                    updateProductUI(productId, updatedProductData);
+                    location.reload();
+                } else {
+                    console.error('Error al editar el producto:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al editar el producto:', error);
+            }
+        }
+
+        async function deleteProduct(productId) {
+            try {
+                const response = await fetch(`/api/products/delete/${productId}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    const deletedProductData = await response.json();
+                    const productContainer = document.getElementById(`product-${productId}`);
+                    productContainer.remove();
+                    location.reload();
+                } else {
+                    console.error('Error al eliminar el producto:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al eliminar el producto:', error);
+            }
+        }
+
+        function updateProductUI(productId, updatedProductData) {
             const productContainer = document.getElementById(`product-${productId}`);
-            productContainer.remove(); // Eliminar el elemento de la lista
-        } else {
-            console.error('Error al eliminar el producto:', response.statusText);
+            const titleElement = productContainer.querySelector('.product-title');
+            const descriptionElement = productContainer.querySelector('.product-description');
+            const priceElement = productContainer.querySelector('.product-price');
+            const codeElement = productContainer.querySelector('.product-code');
+            const categoryElement = productContainer.querySelector('.product-category');
+
+            titleElement.textContent = updatedProductData.title;
+            descriptionElement.textContent = updatedProductData.description;
+            priceElement.textContent = `Precio: ${updatedProductData.price}`;
+            codeElement.textContent = `Código: ${updatedProductData.code}`;
+            categoryElement.textContent = `Categoría: ${updatedProductData.category}`;
         }
-    } catch (error) {
-        console.error('Error al eliminar el producto:', error);
-    }
-}
+        async function addNewProduct(event) {
+            event.preventDefault();
 
-function updateProductUI(productId, updatedProductData) {
-    const productContainer = document.getElementById(`product-${productId}`);
-    const titleElement = productContainer.querySelector('.product-title');
-    const descriptionElement = productContainer.querySelector('.product-description');
-    const priceElement = productContainer.querySelector('.product-price');
-    const codeElement = productContainer.querySelector('.product-code');
-    const categoryElement = productContainer.querySelector('.product-category');
+            const newProduct = {
+                title: document.getElementById('new-title').value,
+                description: document.getElementById('new-description').value,
+                price: parseFloat(document.getElementById('new-price').value),
+                code: document.getElementById('new-code').value,
+                category: document.getElementById('new-category').value,
+                owner: '{{this.email}}',
+            };
 
-    titleElement.textContent = updatedProductData.title;
-    descriptionElement.textContent = updatedProductData.description;
-    priceElement.textContent = `Precio: ${updatedProductData.price}`;
-    codeElement.textContent = `Código: ${updatedProductData.code}`;
-    categoryElement.textContent = `Categoría: ${updatedProductData.category}`;
-}
-async function addNewProduct(event) {
-    event.preventDefault();
+            try {
+                const response = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newProduct),
+                });
 
-    const newProduct = {
-        title: document.getElementById('new-title').value,
-        description: document.getElementById('new-description').value,
-        price: parseFloat(document.getElementById('new-price').value),
-        code: document.getElementById('new-code').value,
-        category: document.getElementById('new-category').value,
-        owner: '{{this.email}}',
-    };
-
-    try {
-        const response = await fetch('/api/products', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newProduct),
-        });
-
-        if (response.ok) {
-            const addedProductData = await response.json();
-            appendNewProduct(addedProductData);
-            location.reload();
-        } else {
-            console.error('Error al agregar el producto:', response.statusText);
+                if (response.ok) {
+                    const addedProductData = await response.json();
+                    appendNewProduct(addedProductData);
+                    location.reload();
+                } else {
+                    console.error('Error al agregar el producto:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al agregar el producto:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error al agregar el producto:', error);
-    }
-}
 
-function appendNewProduct(productData) {
-    const productList = document.querySelector('ul');
-    const newProductItem = document.createElement('li');
-    newProductItem.id = `product-${productData._id}`;
-    newProductItem.innerHTML = `
+        function appendNewProduct(productData) {
+            const productList = document.querySelector('ul');
+            const newProductItem = document.createElement('li');
+            newProductItem.id = `product-${productData._id}`;
+            newProductItem.innerHTML = `
 <h3 class="product-title">${productData.title}</h3>
 <p class="product-description">${productData.description}</p>
 <p class="product-price">Precio: ${productData.price}</p>
@@ -229,8 +248,32 @@ function appendNewProduct(productData) {
 </form>
 <button onclick="deleteProduct('${productData._id}')">Eliminar</button>
 `;
-    productList.appendChild(newProductItem);
-}
+            productList.appendChild(newProductItem);
+        }
+
+        async function purchaseCart(cartId) {
+            try {
+                const response = await fetch(`/api/cart/${cartId}/purchase`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Compra realizada con éxito:', data.message);
+
+                    updateCartView();
+                } else {
+                    console.error('Error al realizar la compra:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al realizar la compra:', error);
+            }
+        }
+
     </script>
 </body>
+
 </html>

@@ -3,6 +3,7 @@ import CartRepository from "../repositories/carts.repository.js"
 import ticketModel from "../dao/models/ticket.model.js";
 import crypto from "crypto"
 import Product from "../dao/models/products.model.js"
+import { sendEmail } from './email.controller.js';
 
 function generateUniqueCode() {
   const currentTimestamp = new Date().getTime().toString();
@@ -65,17 +66,24 @@ const purchaseCart = async (req, res) => {
       return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
     }
 
-    const totalAmount = await Promise.all(userCart.products.map(async (product) => {
+    const productsWithDetails = await Promise.all(userCart.products.map(async (product) => {
       const productInfo = await Product.findById(product.productId);
-      return productInfo.price * product.quantity;
+
+      return {
+        name: productInfo.title, // Reemplaza con el campo correcto del nombre del producto
+        quantity: product.quantity,
+        price: productInfo.price,
+      };
     }));
-    
-    const totalPrice = totalAmount.reduce((total, amount) => total + amount, 0);
+
+    const totalPrice = productsWithDetails.reduce((total, product) => total + (product.price * product.quantity), 0);
 
     const newTicket = new ticketModel({
       code: generateUniqueCode(),
+      purchase_datetime: new Date(),
       amount: totalPrice,
       purchaser: req.session.user.email,
+      products: productsWithDetails, // Agregar la lista de productos con sus detalles
     });
 
     await newTicket.save();
@@ -83,6 +91,28 @@ const purchaseCart = async (req, res) => {
     userCart.products = [];
 
     await userCart.save();
+
+    // Envía el correo electrónico con la información del ticket
+    const emailMessage = `
+      Gracias por tu compra.
+
+      Detalles del Ticket:
+      Código: ${newTicket.code}
+      Comprador: ${newTicket.purchaser}
+
+      Productos Comprados:
+      ${newTicket.products.map(product => {
+        return `
+          - Nombre: ${product.name}
+          - Cantidad: ${product.quantity}
+          - Precio: ${product.price}
+        `;
+      }).join('\n')}
+
+      Total: ${newTicket.amount}
+    `;
+
+    sendEmail(newTicket.purchaser, 'Detalles de la Compra', emailMessage);
 
     res.json({ status: "success", message: "Compra realizada con éxito", ticket: newTicket });
   } catch (error) {

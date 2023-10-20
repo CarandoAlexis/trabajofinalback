@@ -18,6 +18,13 @@ const ticketSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  products: [
+    {
+      name: String,
+      quantity: Number,
+      price: Number,
+    },
+  ],
 });
 
 const ticketModel = mongoose.model('Ticket', ticketSchema);

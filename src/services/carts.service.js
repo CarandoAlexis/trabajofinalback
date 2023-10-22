@@ -7,7 +7,7 @@ class CartService {
   async createCartForUser(userId, userEmail) {
   try {
     const newCart = new CartModel({
-      owner: userEmail, // Usar el email del usuario como owner
+      owner: userEmail,
       name: userId,
       products: [],
     });

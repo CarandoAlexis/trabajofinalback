@@ -1,10 +1,11 @@
 import DAOFactory from '../dao/factory/dao.factory.js';
 import { selectedDAO } from '../config/config.js';
+import logger from "../config/logger.js";
 
 class ProductRepository {
   constructor() {
     this.dao = DAOFactory.createDAO(selectedDAO);
-    console.log(`Dao Actual: ${selectedDAO}`);
+    logger.info(`Dao Actual: ${selectedDAO}`);
   }
 
   async addProduct(productData) {

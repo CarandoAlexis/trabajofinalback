@@ -10,7 +10,6 @@ router.get('/', (req, res) => {
   logger.warning('Mensaje de advertencia (warning)');
   logger.error('Mensaje de error (error)');
   logger.fatal('Mensaje de fatal (fatal)');
-
   res.status(200).json({ message: 'Prueba de registro de eventos completada' });
 });
 

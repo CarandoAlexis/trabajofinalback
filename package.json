@@ -7,14 +7,18 @@
   "scripts": {
     "start:development:mongo": "cross-env NODE_ENV=development DAO_TYPE=mongo nodemon ./src/app.js",
     "start:development:memory": "cross-env NODE_ENV=development DAO_TYPE=memory nodemon ./src/app.js",
-    "start:production": "cross-env NODE_ENV=production nodemon ./src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:production": "cross-env NODE_ENV=production DAO_TYPE=mongo nodemon ./src/app.js",
+    "start:test:mongo": "cross-env NODE_ENV=test DAO_TYPE=mongo nodemon ./src/app.js",
+    "test:models": "cross-env NODE_ENV=test mocha tests/models/**.test.js",
+    "test:supertest": "cross-env NODE_ENV=test mocha tests/**.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.3.10",
     "cross-env": "^7.0.3",
+    "mocha": "^10.2.0",
     "nodemon": "^3.0.1"
   },
   "dependencies": {

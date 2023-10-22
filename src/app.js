@@ -12,7 +12,7 @@ import authMdw from "./middleware/auth.middleware.js";
 import mongoStore from "connect-mongo";
 import passport from "passport";
 import initializePassport from "./config/passport-config.js";
-import { mongoUrl, sessionSecret } from "./config/config.js";
+import { mongoUrl, sessionSecret ,serverPort} from "./config/config.js";
 import cartRouter from "./routes/carts.router.js";
 import errorHandler from "./middleware/errorHandler.js";
 import logger from "./config/logger.js";
@@ -22,7 +22,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerOpts from "./config/swagger.config.js";
 import usersRouter from './routes/users.router.js'; 
 
-console.log("Mongo URL app.js:", mongoUrl);
+logger.info(`Mongo URL app.js:${mongoUrl}`);
 
 const app = express();
 
@@ -64,7 +64,6 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-// Rutas
 app.use("/", viewsRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/products", productsRouter);
@@ -86,9 +85,7 @@ app.use("/products", authMdw, (req, res, next) => {
 
 app.use(errorHandler);
 
-
-const mode = process.env.NODE_ENV || "development";
-const port = mode === "development" ? 8080 : 3000;
+const port = serverPort || 8080;
 app.listen(port, () => {
   displayRoutes(app);
   logger.info(`Server listening on port ${port}`);

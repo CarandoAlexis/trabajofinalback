@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { addProductToCart, createCartForUser , getCartContents , purchaseCart , editCartItemQuantity, removeProductFromCart } from '../controllers/carts.controller.js';
-import { checkAdminRole , checkPremiumRole } from "../middleware/role.middleware.js";
+import { checkAdminRole } from "../middleware/role.middleware.js";
 import authMdw from "../middleware/auth.middleware.js";
 
 const router = Router();

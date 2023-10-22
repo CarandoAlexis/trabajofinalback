@@ -22,6 +22,8 @@ const colors = {
 
 winston.addColors(colors);
 
+const nodeEnv = process.env.NODE_ENV || 'development';
+
 const logger = winston.createLogger({
   levels,
   format: winston.format.combine(
@@ -29,7 +31,7 @@ const logger = winston.createLogger({
     winston.format.colorize({ all: true }),
     winston.format.simple()
   ),
-  defaultMeta: { service: 'desarrollo' },
+  defaultMeta: { service: nodeEnv },
   transports: [
     new winston.transports.Console({
       level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',

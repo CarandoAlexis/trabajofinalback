@@ -12,7 +12,7 @@ import authMdw from "./middleware/auth.middleware.js";
 import mongoStore from "connect-mongo";
 import passport from "passport";
 import initializePassport from "./config/passport-config.js";
-import { mongoUrl, sessionSecret ,serverPort} from "./config/config.js";
+import { mongoUrl, sessionSecret, serverPort } from "./config/config.js";
 import cartRouter from "./routes/carts.router.js";
 import errorHandler from "./middleware/errorHandler.js";
 import logger from "./config/logger.js";
@@ -20,7 +20,7 @@ import loggerTestRouter from './routes/loggerTest.router.js'
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from "swagger-ui-express";
 import swaggerOpts from "./config/swagger.config.js";
-import usersRouter from './routes/users.router.js'; 
+import usersRouter from './routes/users.router.js';
 
 logger.info(`Mongo URL app.js:${mongoUrl}`);
 
@@ -36,15 +36,15 @@ mongoose.connect(mongoUrl, {
 app.use(
   session({
     store: mongoStore.create({
-      mongoUrl, 
+      mongoUrl,
       mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
       ttl: 60 * 3600,
     }),
-    secret: sessionSecret, 
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 60 * 60 * 1000, 
+      maxAge: 60 * 60 * 1000,
     },
   })
 );

@@ -26,11 +26,11 @@ describe('Cart Model', () => {
       name: 'Carrito Vacío',
       products: [],
     };
-  
+
     const cart = new CartModel(cartData);
     const savedCart = await cart.save();
     console.log('Datos carrito:', savedCart);
-  
+
     expect(savedCart._id).to.exist;
     expect(savedCart.owner).to.equal(cartData.owner);
     expect(savedCart.name).to.equal(cartData.name);
@@ -48,18 +48,18 @@ describe('Cart Model', () => {
         },
       ],
     };
-  
+
     const cart = new CartModel(cartData);
     const savedCart = await cart.save();
     console.log('Datos carrito:', savedCart);
-  
+
     expect(savedCart._id).to.exist;
     expect(savedCart.owner).to.equal(cartData.owner);
     expect(savedCart.name).to.equal(cartData.name);
     expect(savedCart.products[0].productId.toString()).to.equal(cartData.products[0].productId.toString());
     expect(savedCart.products[0].quantity).to.equal(cartData.products[0].quantity);
   });
-  
+
   it('debería guardar un producto al carrito con cantidad predeterminada', async () => {
     const cartData = {
       owner: 'Propietario de Prueba',
@@ -70,10 +70,10 @@ describe('Cart Model', () => {
         },
       ],
     };
-    
+
     const cart = new CartModel(cartData);
     const savedCart = await cart.save();
-    console.log('Carrito con producto con cantidad predeterminada:',savedCart)
+    console.log('Carrito con producto con cantidad predeterminada:', savedCart)
     expect(savedCart.products[0].quantity).to.equal(1);
   });
 })

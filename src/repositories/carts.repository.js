@@ -5,7 +5,7 @@ class CartRepository {
     return CartModel.findById(cartId).populate("products.productId");
   }
   async findCartByUserId(userId) {
-    return CartModel.findOne({ name: userId }).populate('products.productId');
+    return CartModel.findOne({ name: userId }).populate("products.productId");
   }
 }
 

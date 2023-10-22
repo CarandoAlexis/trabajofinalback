@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const cartSchema = new mongoose.Schema({
-  owner:{
-    type:String,
+  owner: {
+    type: String,
     required: true,
   },
   name: {

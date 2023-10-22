@@ -7,7 +7,7 @@
   "scripts": {
     "start:development:mongo": "cross-env NODE_ENV=development DAO_TYPE=mongo nodemon ./src/app.js",
     "start:development:memory": "cross-env NODE_ENV=development DAO_TYPE=memory nodemon ./src/app.js",
-    "start:production": "cross-env NODE_ENV=production DAO_TYPE=mongo nodemon ./src/app.js",
+    "start:production:mongo": "cross-env NODE_ENV=production DAO_TYPE=mongo nodemon ./src/app.js",
     "start:test:mongo": "cross-env NODE_ENV=test DAO_TYPE=mongo nodemon ./src/app.js",
     "test:models": "cross-env NODE_ENV=test mocha tests/models/**.test.js",
     "test:supertest": "cross-env NODE_ENV=test mocha tests/**.test.js"

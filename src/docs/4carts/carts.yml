@@ -3,31 +3,15 @@ info:
   title: API de Carritos
   version: 1.0.0
 paths:
-  /api/cart/{cartId}:
-    get:
-      summary: Obtiene el contenido de un carrito
-      parameters:
-        - in: path
-          name: cartId
-          required: true
-          schema:
-            type: string
-          description: ID del carrito
-      responses:
-        "200":
-          description: Respuesta exitosa
-        "401":
-          description: No autorizado
-        "404":
-          description: Carrito no encontrado
   /api/cart/create:
     post:
-      summary: Crea un carrito para un usuario
+      summary: Crea un carrito para un usuario, la creacion del carrito es automática al registrarse por lo tanto no hay acciones concretas para realizar en este endpoint de forma independiente
       responses:
         "201":
           description: Carrito creado exitosamente
         "401":
           description: No autorizado
+
   /api/cart/{cartId}/add/{productId}:
     put:
       summary: Agrega un producto al carrito
@@ -51,6 +35,25 @@ paths:
           description: No autorizado
         "404":
           description: Carrito o producto no encontrado
+
+  /api/cart/{cartId}:
+    get:
+      summary: Obtiene el contenido de un carrito
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: string
+          description: ID del carrito
+      responses:
+        "200":
+          description: Respuesta exitosa
+        "401":
+          description: No autorizado
+        "404":
+          description: Carrito no encontrado
+
   /api/cart/{cartId}/edit/{productId}:
     put:
       summary: Edita un producto en el carrito
@@ -67,6 +70,16 @@ paths:
           schema:
             type: string
           description: ID del producto a editar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  description: Nueva cantidad del producto en el carrito
       responses:
         "200":
           description: Producto editado exitosamente
@@ -91,6 +104,7 @@ paths:
           description: No autorizado
         "404":
           description: Carrito no encontrado
+
   /api/cart/{cartId}/remove/{productId}:
     delete:
       summary: Elimina un producto del carrito

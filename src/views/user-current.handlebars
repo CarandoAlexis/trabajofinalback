@@ -6,116 +6,114 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Opciones para Usuario</title>
 </head>
+
 <body>
-<h1>Bienvenido, {{this.first_name}} {{this.last_name}}</h1>
+  <h1>Bienvenido, {{this.first_name}} {{this.last_name}}</h1>
 
-    <h2>Productos Disponibles</h2>
+  <h2>Productos Disponibles</h2>
 
-<ul>
-  {{#each products}}
-  <li>
-    <h3>{{title}}</h3>
-    <p>{{description}}</p>
-    <p>Precio: {{price}}</p>
-    <input type="number" id="quantity-{{_id}}" min="1" value="1">
-    <button onclick="addProductToCart('{{_id}}')">Agregar al Carrito</button>
-  </li>
-  {{/each}}
-</ul>
-<div id="cart-content">
+  <ul>
+    {{#each products}}
+    <li>
+      <h3>{{title}}</h3>
+      <p>{{description}}</p>
+      <p>Precio: {{price}}</p>
+      <input type="number" id="quantity-{{_id}}" min="1" value="1">
+      <button onclick="addProductToCart('{{_id}}')">Agregar al Carrito</button>
+    </li>
+    {{/each}}
+  </ul>
+  <div id="cart-content">
 
-</div>
-<button onclick="purchaseCart('{{cartId}}')">Comprar</button>
-<div>
-  <form action="/api/session/logout" method="get">
-    <p>
-      <button type="submit">Cerrar Sesión</button>
-    </p>
-  </form>
-</div>
-<script>
-  async function updateCartView() {
-    try {
-      const response = await fetch(`/api/cart/{{cartId}}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  </div>
+  <button onclick="purchaseCart('{{cartId}}')">Comprar</button>
+  <div>
+    <form action="/api/session/logout" method="get">
+      <p>
+        <button type="submit">Cerrar Sesión</button>
+      </p>
+    </form>
+  </div>
+  <script>
+    async function updateCartView() {
+      try {
+        const response = await fetch(`/api/cart/{{cartId}}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        const cartContentDiv = document.getElementById('cart-content');
-
-
-        cartContentDiv.innerHTML = '';
+        if (response.ok) {
+          const data = await response.json();
+          const cartContentDiv = document.getElementById('cart-content');
 
 
-        data.cart.products.forEach(product => {
-          const productInfo = `
+          cartContentDiv.innerHTML = '';
+
+
+          data.cart.products.forEach(product => {
+            const productInfo = `
             <p>Producto: ${product.productId.title} - Cantidad: ${product.quantity}</p>
           `;
-          cartContentDiv.innerHTML += productInfo;
+            cartContentDiv.innerHTML += productInfo;
+          });
+        } else {
+          console.error('Error al obtener el contenido del carrito:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al obtener el contenido del carrito:', error);
+      }
+    }
+    async function purchaseCart(cartId) {
+      try {
+        const response = await fetch(`/api/cart/{{cartId}}/purchase`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
-      } else {
-        console.error('Error al obtener el contenido del carrito:', response.statusText);
+
+        if (response.ok) {
+          const data = await response.json();
+
+          updateCartView();
+        } else {
+          console.error('Error al realizar la compra:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al realizar la compra:', error);
       }
-    } catch (error) {
-      console.error('Error al obtener el contenido del carrito:', error);
     }
-  }
-  async function purchaseCart(cartId) {
-    try {
-      const response = await fetch(`/api/cart/{{cartId}}/purchase`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
 
-      if (response.ok) {
-        const data = await response.json();
+    window.addEventListener('DOMContentLoaded', updateCartView);
 
-        console.log('Compra realizada con éxito:', data.message);
+    async function addProductToCart(productId) {
+      try {
+        const quantityInput = document.getElementById(`quantity-${productId}`);
+        const quantity = parseInt(quantityInput.value, 10);
 
-        updateCartView();
-      } else {
-        console.error('Error al realizar la compra:', response.statusText);
+        const response = await fetch(`/api/cart/{{cartId}}/add/${productId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ quantity }),
+        });
+
+        if (response.ok) {
+
+          updateCartView();
+        } else {
+          console.error('Error al agregar producto(s) al carrito:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al agregar producto(s) al carrito:', error);
       }
-    } catch (error) {
-      console.error('Error al realizar la compra:', error);
     }
-  }
-
-  window.addEventListener('DOMContentLoaded', updateCartView);
-
-  async function addProductToCart(productId) {
-    try {
-      const quantityInput = document.getElementById(`quantity-${productId}`);
-      const quantity = parseInt(quantityInput.value, 10);
-
-      const response = await fetch(`/api/cart/{{cartId}}/add/${productId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ quantity }),
-      });
-
-      if (response.ok) {
-        console.log('Producto(s) agregado(s) al carrito');
-
-        updateCartView();
-      } else {
-        console.error('Error al agregar producto(s) al carrito:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error al agregar producto(s) al carrito:', error);
-    }
-  }
 
 
-</script>
+  </script>
 
 </body>
 

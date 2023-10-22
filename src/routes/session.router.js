@@ -17,7 +17,7 @@ router.get("/github/current", sessionController.getCurrentUserDTO);
 
 router.get("/github/callback", sessionController.githubAuthenticationCallback);
 
-router.get("/current", authMdw , sessionController.getCurrentUserDTO);
+router.get("/current", authMdw, sessionController.getCurrentUserDTO);
 
 
 

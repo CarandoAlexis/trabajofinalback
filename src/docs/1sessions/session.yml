@@ -1,0 +1,144 @@
+openapi: 3.0.0
+info:
+  title: API de Sesión
+  version: 1.0.0
+paths:
+  /api/session/register:
+    post:
+      summary:
+        Registrar un nuevo usuario, recomiendo hacer la creacion del admin y usuarios.
+        Con uno de los usuarios con correo real para hacer la prueba del proceso de compra ya que se envia un ticket con la info de la compra.
+        Tambien si es un usuario premium que agrego un producto al momento de eliminar este producto se le notifica por mail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: Nombre del usuario
+                last_name:
+                  type: string
+                  description: Apellido del usuario
+                email:
+                  type: string
+                  format: email
+                  description: Correo electrónico del usuario
+                age:
+                  type: number
+                  description: Edad del usuario
+                password:
+                  type: string
+                  description: Contraseña del usuario
+            examples:
+              admin:
+                value:
+                  first_name: Admin
+                  last_name: Coder
+                  email: adminCoder@coder.com
+                  age: 0
+                  password: admin
+              user:
+                value:
+                  first_name: string
+                  last_name: string
+                  email: user@example.com
+                  age: 30
+                  password: string
+              user2:
+                value:
+                  first_name: string
+                  last_name: string
+                  email: user@example2.com
+                  age: 30
+                  password: string
+              user3:
+                value:
+                  first_name: string
+                  last_name: string
+                  email: user@example3.com
+                  age: 30
+                  password: string
+              user4:
+                value:
+                  first_name: string
+                  last_name: string
+                  email: user@example4.com
+                  age: 30
+                  password: string
+      responses:
+        "201":
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              example:
+                message: "Usuario registrado exitosamente"
+        "400":
+          description: Solicitud incorrecta
+          content:
+            application/json:
+              example:
+                message: "Datos de registro incorrectos"
+  /api/session/login:
+    post:
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Correo
+                password:
+                  type: string
+                  description: Contraseña
+            examples:
+              admin:
+                value:
+                  email: adminCoder@coder.com
+                  password: admin
+              user:
+                value:
+                  email: user@example.com
+                  password: string
+              user2:
+                value:
+                  email: user@example2.com
+                  password: string
+              user3:
+                value:
+                  email: user@example3.com
+                  password: string
+              user4:
+                value:
+                  email: user@example4.com
+                  password: string
+      responses:
+        "200":
+          description: Sesión iniciada exitosamente
+          content:
+            application/json:
+              example:
+                message: "Sesión iniciada exitosamente"
+        "401":
+          description: Credenciales incorrectas
+          content:
+            application/json:
+              example:
+                message: "Credenciales incorrectas"
+  /api/session/logout:
+    get:
+      summary: Cerrar sesión
+      responses:
+        "200":
+          description: Sesión cerrada exitosamente
+          content:
+            application/json:
+              example:
+                message: "Sesión cerrada exitosamente"

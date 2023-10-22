@@ -1,0 +1,164 @@
+openapi: 3.0.0
+info:
+  title: API de Usuarios
+  version: 1.0.0
+paths:
+  /api/users/{uid}:
+    put:
+      summary: Actualizar rol de un usuario siendo admin
+      description: Actualiza la información de un usuario especificado por su ID.
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID del usuario a actualizar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newRole:
+                  type: string
+                  description: Nuevo rol del usuario (usuario o premium)
+      responses:
+        "200":
+          description: Usuario actualizado exitosamente
+          content:
+            application/json:
+              example:
+                message: "Usuario actualizado exitosamente"
+        "400":
+          description: Solicitud incorrecta
+          content:
+            application/json:
+              example:
+                message: "Solicitud incorrecta"
+    delete:
+      summary: Eliminar un usuario
+      description: Elimina un usuario específico por su ID.
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID del usuario a eliminar
+      responses:
+        "200":
+          description: Usuario eliminado exitosamente
+          content:
+            application/json:
+              example:
+                message: "Usuario eliminado exitosamente"
+        "404":
+          description: Usuario no encontrado
+          content:
+            application/json:
+              example:
+                message: "Usuario no encontrado"
+        "401":
+          description: No autorizado
+          content:
+            application/json:
+              example:
+                message: "No autorizado"
+
+  /api/users/{uid}/identificacion:
+    post:
+      summary: Subir identificación
+      description: Sube una identificación para el usuario especificado por su ID.
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID del usuario para el cual se subirá la identificación
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                identificacion:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Identificación subida exitosamente
+          content:
+            application/json:
+              example:
+                message: "Identificación subida exitosamente"
+        "400":
+          description: Solicitud incorrecta
+          content:
+            application/json:
+              example:
+                message: "Solicitud incorrecta"
+
+  /api/users/premium/{uid}:
+    put:
+      summary: Cambiar rol a premium si se tiene una identificacion
+      description: Cambia el rol de un usuario a premium.
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID del usuario cuyo rol se va a cambiar a premium
+      responses:
+        "200":
+          description: Rol cambiado a premium exitosamente
+          content:
+            application/json:
+              example:
+                message: "Rol cambiado a premium exitosamente"
+        "400":
+          description: Solicitud incorrecta
+          content:
+            application/json:
+              example:
+                message: "Solicitud incorrecta"
+
+  /api/users:
+    delete:
+      summary: Eliminar usuarios inactivos
+      description: Elimina usuarios inactivos de la base de datos.
+      responses:
+        "200":
+          description: Usuarios inactivos eliminados exitosamente
+          content:
+            application/json:
+              example:
+                message: "Usuarios inactivos eliminados exitosamente"
+        "401":
+          description: No autorizado
+          content:
+            application/json:
+              example:
+                message: "No autorizado"
+
+  /api/users/allusers:
+    get:
+      summary: Obtener todos los usuarios
+      description: Obtiene una lista de todos los usuarios.
+      responses:
+        "200":
+          description: Lista de usuarios obtenida exitosamente
+          content:
+            application/json:
+              example:
+                users: [user1, user2, user3]
+        "401":
+          description: No autorizado
+          content:
+            application/json:
+              example:
+                message: "No autorizado"

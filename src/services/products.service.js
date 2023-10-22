@@ -2,7 +2,6 @@ import ProductDTO from '../dto/products.dto.js';
 import ProductRepository from '../repositories/products.repository.js';
 import ProductModel from "../dao/models/products.model.js";
 
-
 class ProductService {
   constructor() {
     this.repository = new ProductRepository();

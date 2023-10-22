@@ -3,29 +3,29 @@ import mongoose from "mongoose";
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   price: {
     type: Number,
-    required: true
+    required: true,
   },
   code: {
     type: String,
-    required: true
+    required: true,
   },
   category: {
     type: String,
-    required: true
+    required: true,
   },
   owner: {
     type: String,
     required: true,
-    default: "admin"
-  }
+    default: "admin",
+  },
 });
 
 const Product = mongoose.model("products", productSchema);

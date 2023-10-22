@@ -1,5 +1,5 @@
-import DAOFactory from '../dao/factory/dao.factory.js';
-import { selectedDAO } from '../config/config.js';
+import DAOFactory from "../dao/factory/dao.factory.js";
+import { selectedDAO } from "../config/config.js";
 import logger from "../config/logger.js";
 
 class ProductRepository {
@@ -19,7 +19,7 @@ class ProductRepository {
   async editProduct(productId, updatedProductData) {
     await this.dao.editProduct(productId, updatedProductData);
   }
-  
+
   async deleteProduct(productId) {
     await this.dao.deleteProduct(productId);
   }
@@ -27,7 +27,6 @@ class ProductRepository {
   async getProductById(productId) {
     return await this.dao.getProductById(productId);
   }
-  
 }
 
 export default ProductRepository;

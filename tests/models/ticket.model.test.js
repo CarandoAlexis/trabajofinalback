@@ -31,7 +31,7 @@ describe('Ticket Model', () => {
 
   it('debería poder crear y guardar un ticket', async () => {
     const ticketData = {
-      code: generateRandomCode(4), // Genera un código aleatorio de 4 caracteres
+      code: generateRandomCode(4),
       amount: 100,
       purchaser: 'Juan',
       products: [
@@ -47,19 +47,19 @@ describe('Ticket Model', () => {
         },
       ]
     };
-  
+
     const ticket = new TicketModel(ticketData);
     const savedTicket = await ticket.save();
     console.log('Ticket guardado:', savedTicket);
-  
+
     expect(savedTicket._id).to.exist;
     expect(savedTicket.code).to.equal(ticketData.code);
     expect(savedTicket.amount).to.equal(ticketData.amount);
     expect(savedTicket.purchaser).to.equal(ticketData.purchaser);
     expect(savedTicket).to.have.property('products');
   });
-  
-  
+
+
 });
 
 const limpiarBaseDeDatos = async () => {

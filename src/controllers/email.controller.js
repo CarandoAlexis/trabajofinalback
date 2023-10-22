@@ -1,28 +1,28 @@
-import nodemailer from 'nodemailer';
-import { emailUser, emailPassword } from '../config/config.js';
+import nodemailer from "nodemailer";
+import { emailUser, emailPassword } from "../config/config.js";
+import logger from "../config/logger.js";
 
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  service: "Gmail",
   auth: {
     user: `${emailUser}`,
     pass: `${emailPassword}`,
   },
 });
 
-
 export const sendEmail = (to, subject, text) => {
   const mailOptions = {
-    from: 'alexiscarando@gmail.com',
-    to, 
+    from: "alexiscarando@gmail.com",
+    to,
     subject,
     text,
-};
+  };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.error('Error al enviar', error);
+      logger.error("Error al enviar el correo", error);
     } else {
-      console.log('Correo electrónico enviado:', info.response);
+      logger.info("Correo electrónico enviado", info.response);
     }
   });
 };

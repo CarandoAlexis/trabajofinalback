@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi from "joi";
 
 class ProductDTO {
   constructor({ title, description, price, code, category, owner }) {
@@ -17,7 +17,7 @@ class ProductDTO {
       price,
       code,
       category,
-      owner, // Agregamos el campo owner aquí
+      owner,
     });
 
     if (error) {

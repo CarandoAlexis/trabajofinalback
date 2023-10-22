@@ -1,4 +1,5 @@
 import ProductModel from "../models/products.model.js";
+import logger from "../../config/logger.js";
 
 class MongoProductManager {
   static instance;
@@ -16,19 +17,19 @@ class MongoProductManager {
       const product = new ProductModel(productData);
       await product.save();
     } catch (error) {
-      console.error("Error al agregar el producto:", error);
+      logger.error("Error al agregar el producto:", error);
       throw error;
     }
   }
 
   async getProducts() {
     try {
-      console.log("Getting products");
+      logger.info("Obteniendo productos");
       const products = await ProductModel.find();
-      console.log("Products:", products);
+      logger.info(`Productos: ${(products)}`);
       return products;
     } catch (error) {
-      console.error("Error al obtener los productos:", error);
+      logger.error("Error al obtener los productos", error);
       throw error;
     }
   }
@@ -38,7 +39,7 @@ class MongoProductManager {
       const product = await ProductModel.findById(productId);
       return product;
     } catch (error) {
-      console.error("Error al obtener el producto por ID:", error);
+      logger.error("Error al obtener el producto por ID:", error);
       throw error;
     }
   }
@@ -47,7 +48,7 @@ class MongoProductManager {
     try {
       await ProductModel.findByIdAndUpdate(productId, updatedProductData);
     } catch (error) {
-      console.error("Error al editar el producto:", error);
+      logger.error("Error al editar el producto:", error);
       throw error;
     }
   }
@@ -56,11 +57,10 @@ class MongoProductManager {
     try {
       await ProductModel.findByIdAndDelete(productId);
     } catch (error) {
-      console.error("Error al eliminar el producto:", error);
+      logger.error("Error al eliminar el producto:", error);
       throw error;
     }
   }
-
 }
 
 export default MongoProductManager;

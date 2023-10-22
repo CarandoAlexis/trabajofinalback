@@ -4,37 +4,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Opciones para Usuario</title>
+  <title>Panel de Usuario</title>
 </head>
 
 <body>
   <h1>Bienvenido, {{this.first_name}} {{this.last_name}}</h1>
 
   <h2>Productos Disponibles</h2>
-
   <ul>
     {{#each products}}
     <li>
       <h3>{{title}}</h3>
       <p>{{description}}</p>
       <p>Precio: {{price}}</p>
+      <p>Código: {{code}}</p>
+      <p>Categoría: {{category}}</p>
       <input type="number" id="quantity-{{_id}}" min="1" value="1">
       <button onclick="addProductToCart('{{_id}}')">Agregar al Carrito</button>
     </li>
     {{/each}}
   </ul>
-  <div id="cart-content">
+
+  <h2>Carrito de Compras</h2>
+
+  <button onclick="showCartView()">Ver Carrito</button>
+  <button onclick="hideCartView()">Ocultar Carrito</button>
+  <button onclick="purchaseCart('{{cartId}}')" style="margin-top: 20px;">Comprar productos</button>
+
+
+
+  <div id="cart-view" style="display: none">
+    <h3>Contenido del Carrito</h3>
+    <ul id="cart-content">
+      {{#each cartItems}}
+      <li class="cart-item">
+        <p>Producto: {{title}} - Cantidad: <span id="cart-quantity-{{_id}}">{{quantity}}</span></p>
+        <button onclick="removeProductFromCart('{{_id}}')">Eliminar producto</button>
+      </li>
+      {{/each}}
+    </ul>
 
   </div>
-  <button onclick="purchaseCart('{{cartId}}')">Comprar</button>
+
   <div>
     <form action="/api/session/logout" method="get">
-      <p>
-        <button type="submit">Cerrar Sesión</button>
-      </p>
+      <button type="submit" style="margin-top: 20px;">Cerrar Sesión</button>
     </form>
   </div>
   <script>
+    async function showCartView() {
+      const cartView = document.getElementById('cart-view');
+      cartView.style.display = 'block';
+      updateCartView();
+    }
+    async function hideCartView() {
+      const cartView = document.getElementById('cart-view');
+      cartView.style.display = 'none';
+    }
+
+
     async function updateCartView() {
       try {
         const response = await fetch(`/api/cart/{{cartId}}`, {
@@ -46,17 +74,19 @@
 
         if (response.ok) {
           const data = await response.json();
-          const cartContentDiv = document.getElementById('cart-content');
-
-
-          cartContentDiv.innerHTML = '';
-
-
+          const cartContentList = document.getElementById('cart-content');
+          cartContentList.innerHTML = '';
           data.cart.products.forEach(product => {
+            const cartItem = document.createElement('li');
+            cartItem.className = 'cart-item';
+
             const productInfo = `
-            <p>Producto: ${product.productId.title} - Cantidad: ${product.quantity}</p>
-          `;
-            cartContentDiv.innerHTML += productInfo;
+              <p>Producto: ${product.productId.title} - Cantidad: <span id="cart-quantity-${product.productId._id}">${product.quantity}</span></p>
+              <button onclick="removeProductFromCart('${product.productId._id}')">Eliminar producto</button>
+            `;
+
+            cartItem.innerHTML = productInfo;
+            cartContentList.appendChild(cartItem);
           });
         } else {
           console.error('Error al obtener el contenido del carrito:', response.statusText);
@@ -65,34 +95,11 @@
         console.error('Error al obtener el contenido del carrito:', error);
       }
     }
-    async function purchaseCart(cartId) {
-      try {
-        const response = await fetch(`/api/cart/{{cartId}}/purchase`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-
-          updateCartView();
-        } else {
-          console.error('Error al realizar la compra:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error al realizar la compra:', error);
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', updateCartView);
 
     async function addProductToCart(productId) {
       try {
         const quantityInput = document.getElementById(`quantity-${productId}`);
         const quantity = parseInt(quantityInput.value, 10);
-
         const response = await fetch(`/api/cart/{{cartId}}/add/${productId}`, {
           method: 'PUT',
           headers: {
@@ -100,9 +107,7 @@
           },
           body: JSON.stringify({ quantity }),
         });
-
         if (response.ok) {
-
           updateCartView();
         } else {
           console.error('Error al agregar producto(s) al carrito:', response.statusText);
@@ -112,9 +117,42 @@
       }
     }
 
+    async function purchaseCart(cartId) {
+      try {
+        const response = await fetch(`/api/cart/${cartId}/purchase`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          updateCartView();
+        } else {
+          console.error('Error al realizar la compra:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al realizar la compra:', error);
+      }
+    }
 
+    async function removeProductFromCart(productId) {
+      try {
+        const response = await fetch(`/api/cart/{{cartId}}/remove/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          updateCartView();
+        } else {
+          console.error('Error al eliminar producto del carrito:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al eliminar producto del carrito:', error);
+      }
+    }
   </script>
-
 </body>
 
 </html>

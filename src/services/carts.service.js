@@ -22,6 +22,8 @@ class CartService {
     try {
       const userCart = await CartRepository.findCartByUserId(userId);
 
+      console.log("userCart:", userCart);
+
       if (!userCart) {
         throw new Error('Carrito no encontrado');
       }

@@ -12,3 +12,4 @@ export const emailPassword = process.env.EMAIL_PASS;
 export const serverPort = process.env.PORT;
 export const githubclientID = process.env.GITHUB_CLIENT_ID;
 export const githubclientSecret = process.env.GITHUB_CLIENT_SECRET;
+export const callbackGITH = process.env.CALLBACK_URL;

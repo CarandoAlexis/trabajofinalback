@@ -2,7 +2,7 @@ import passport from "passport";
 import userModel from "../dao/models/user.model.js";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as LocalStrategy } from "passport-local";
-import { githubclientID, githubclientSecret } from "./config.js";
+import { githubclientID, githubclientSecret, callbackGITH } from "./config.js";
 
 const initializePassport = () => {
   passport.use(
@@ -35,13 +35,14 @@ const initializePassport = () => {
     })
   );
 
+
   passport.use(
     "github",
     new GitHubStrategy(
       {
         clientID: githubclientID,
         clientSecret: githubclientSecret,
-        callbackURL: "http://localhost:5000/api/session/github/callback",
+        callbackURL: callbackGITH,
         scope: ["user:email"],
       },
       async (accessToken, refreshToken, profile, done) => {

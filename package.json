@@ -5,6 +5,7 @@
   "main": "src/app.js",
   "type": "module",
   "scripts": {
+    "start":"cross-env NODE_ENV=development DAO_TYPE=mongo node ./src/app.js",
     "start:development:mongo": "cross-env NODE_ENV=development DAO_TYPE=mongo nodemon ./src/app.js",
     "start:development:memory": "cross-env NODE_ENV=development DAO_TYPE=memory nodemon ./src/app.js",
     "start:production:mongo": "cross-env NODE_ENV=production DAO_TYPE=mongo nodemon ./src/app.js",

@@ -74,12 +74,12 @@ El proyecto esta conformado por las siguientes rutas:
 
 ## Variables de entorno a configurar en un .env
 
-NODE_ENV=
-MONGO_DB_CONNECTION=
-SESSION_SECRET=
-PORT=
-EMAIL_USER=
-EMAIL_PASS=
+- `NODE_ENV=`: Especifica el entorno en el que se ejecuta la aplicación
+- `MONGO_DB_CONNECTION=`: Cadena de conexión a una base de datos MongoDB
+- `SESSION_SECRET=`: Clave secreta utilizada para firmar y proteger las sesiones de usuario con express-session
+- `PORT=`: Especifica el puerto en el correra la aplicación
+- `EMAIL_USER=`: Usuario de gmail para usar mailer
+- `EMAIL_PASS=`: Clave para aplicaciones de gmail
 
 ## Scripts para ejecutar la aplicacion
 

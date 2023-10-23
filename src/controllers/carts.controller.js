@@ -31,6 +31,22 @@ const addProductToCart = async (req, res) => {
     const userId = req.session.user._id;
     const { quantity } = req.body;
 
+    const cart = await CartRepository.findCartByCartId(cartId);
+    if (!cart) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Carrito no encontrado" });
+    }
+
+    if (cart.owner !== req.session.user.email) {
+      return res
+        .status(403)
+        .json({
+          status: "error",
+          message: "No tienes permisos para agregar productos a este carrito",
+        });
+    }
+
     const message = await CartService.addProductToCart(
       cartId,
       userId,
@@ -41,12 +57,10 @@ const addProductToCart = async (req, res) => {
     res.status(200).json({ message: message });
   } catch (error) {
     logger.error("Error al agregar producto al carrito:", error);
-    res
-      .status(500)
-      .json({
-        status: "error",
-        message: "Error al agregar producto al carrito",
-      });
+    res.status(500).json({
+      status: "error",
+      message: "Error al agregar producto al carrito",
+    });
   }
 };
 
@@ -62,7 +76,13 @@ const getCartContents = async (req, res) => {
         .json({ status: "error", message: "Carrito no encontrado" });
     }
 
-    res.json({ status: "success", cart });
+    if (cart.owner === req.session.user.email || req.session.user.role === "admin") {
+      res.json({ status: "success", cart });
+    } else {
+      return res
+        .status(403)
+        .json({ status: "error", message: "No tienes permisos para acceder a este carrito" });
+    }
   } catch (error) {
     logger.error("Error al obtener el carrito:", error);
     res
@@ -81,6 +101,12 @@ const purchaseCart = async (req, res) => {
       return res
         .status(404)
         .json({ status: "error", message: "Carrito no encontrado" });
+    }
+
+    if (userCart.owner !== req.session.user.email) {
+      return res
+        .status(403)
+        .json({ status: "error", message: "No tienes permisos para realizar la compra de este carrito" });
     }
 
     if (userCart.products.length === 0) {
@@ -169,6 +195,12 @@ const editCartItemQuantity = async (req, res) => {
         .json({ status: "error", message: "Carrito no encontrado" });
     }
 
+    if (userCart.owner !== req.session.user.email) {
+      return res
+        .status(403)
+        .json({ status: "error", message: "No tienes permisos para editar este carrito" });
+    }
+
     const existingProduct = userCart.products.find(
       (product) => product.productId._id.toString() === productId
     );
@@ -215,6 +247,12 @@ const removeProductFromCart = async (req, res) => {
         .json({ status: "error", message: "Carrito no encontrado" });
     }
 
+    if (userCart.owner !== req.session.user.email) {
+      return res
+        .status(403)
+        .json({ status: "error", message: "No tienes permisos para eliminar productos de este carrito" });
+    }
+
     const existingProductIndex = userCart.products.findIndex(
       (product) => product.productId._id.toString() === productId
     );
@@ -243,6 +281,7 @@ const removeProductFromCart = async (req, res) => {
       });
   }
 };
+
 
 export {
   createCartForUser,

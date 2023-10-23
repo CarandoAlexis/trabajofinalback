@@ -1,6 +1,9 @@
 # Backend de una aplicación ecommerce
 
-# Ultima entrega
+## Tabla de Contenidos
+
+1. [Instalación del proyecto](#Instalación_del_proyecto)
+2. [Manejo de usuarios](#Manejo_de_usuarios)
 
 ## Instalación del proyecto
 
@@ -121,6 +124,8 @@ Dentro de la documentación de swagger estan los endpoints mas importantes
 
 Recomiendo empezar con la creacion de admin y usuario para realizar las pruebas necesarias igualmente gran mayoria del flujo de trabajo se encuentras en la documentacion de swagger
 
+# Manejo de usuarios
+
 ## Creacion de usuarios:
 
 La creacion de un usuario la podemos realizar haciendo uso del metodo POST en la ruta `http://localhost:PORT/api/session/register` con los siguientes datos de ejemplo:
@@ -159,6 +164,10 @@ Luego de crear los usuarios puedes hacer el login en la ruta `http://localhost:P
 }
 ```
 
+## Logout de usuarios:
+
+Para hacer el logout de un usuario debes utilizar un metodo GET en la ruta `http://localhost:PORT/api/session/logout`
+
 ## Cambio de rol de usuarios:
 
 El admin tiene poder para cambiar el rol de un usuario entre "usuario" y "premium" haciendo uso del metodo PUT en la siguiente ruta donde :uid es el id del usuario en tu base de datos `http://localhost:PORT/api/users/:uid` con cuerpo de la solicitud:
@@ -183,8 +192,90 @@ Realizada la subida de la identificacion podras realizar el cambio de rol desde 
 }
 ```
 
-## Despliegie de la aplicacion
+## Lista de usuarios:
 
-La aplicacion se encuentra desplegada en Railway.app en el siguiente link
+Solo el admin tiene permiso para ver esta lista asique recorda iniciar sesión con un admin para poder ver la lista debera hacer un GET en `http://localhost:PORT/api/users/allusers`
+
+## Eliminación de un usuario individual:
+
+Para eliminar un usuario deberas hacer un DELETE en `http://localhost:PORT/api/users/:uid` esto solo lo puede hacer el admin
+
+## Eliminación de usuarios inactivos:
+
+Tambien podras eliminar los usuarios que esten inactivos durante cierta cantidad de tiempo, esto no esta limitado solo por admin es un metodo que puede que este bueno que se ejecute de manera automatica cada cierto periodo de tiempo, en el proyecto esta configurado para realizar luego de solo segundos inactivo por cuestiones prácticas pero se puede cambiar el valor al que se desee pueden ser meses. Utiliza el DELETE en `http://localhost:PORT/api/users`
+
+# Manejo de productos
+
+## Agregar un producto:
+
+Para agregar un producto a la base de datos se necesita el rol de "admin" o "premium", al agregar un producto como "premium" se le asigna a este usuario como el owner, se utiliza un metodo POST en `http://localhost:PORT/api/products` con cuerpo de la solicitud:
+
+```shell
+{
+    "title": "producto prueba",
+    "description": "producto prueba",
+    "price": 1000,
+    "code": "P1",
+    "category":"producto"
+}
+```
+
+## Obtener todos los productos:
+
+Para obtener esta lista de productos deberas logear como "admin" los roles "usuario" y "premium" interactuan con estos productos pero con otras logicas desde la generacion de vistas, para obtener la lista se utiliza un metodo GET en `http://localhost:PORT/api/products`
+
+## Editar un producto:
+
+Para editar un producto deberas logear como "admin" o con rol "premium" si eres el owner de un producto puedes hacer la edicion de ese en especifico nada mas, la edicion la hacemos utilizando un metodo PUT en `http://localhost:PORT/api/products/edit/:id` con cuerpo de la solicitud:
+
+```shell
+{
+    "title": "producto prueba editado",
+    "description": "producto prueba editado",
+    "price": 2000,
+    "code": "P2",
+    "category":"producto"
+}
+```
+
+## Eliminar un producto:
+
+Podras eliminar un producto de la base de datos como "admin" teniendo libertad de eliminar cualquier producto o como "premium" siendo owner del mismo, utiliza un metodo DELETE en la ruta `http://localhost:PORT/api/products/delete/:id`
+
+# Manejo de carritos
+
+## Creacion de un carrito:
+
+La creacion del carrito esta ligada a una logica al momento de hacer el registro por lo que no hay que hacer una creacion manual de un carrito para un usuario, la creacion esta limitada para el "admin" al momento de registrarlo este no recibira un carrito
+
+## Obtener datos de un carrito:
+
+Podras obtener los datos de un carrito deberas estas logeado, como admin podras ver el contenido de cualquier carrito de los usuarios, como un usuario solo podras ver el contenido de tu propio carrito, para hacer esto deberas utilizar un metodo GET en la ruta `http://localhost:PORT/api/cart/:cartId`
+
+## Agregar producto a un carrito:
+
+Para agregar un producto a un carrito deberas primero estar logeado y segundo no ser un admin ya que no posee un carrito, utilizaremos un metodo PUT en la ruta `http://localhost:PORT/api/cart/:cartId/add/:productId` No se puede agregar un producto duplicado al carrito por lo tanto al intentarlo dara un error
+
+## Editar cantidad de un producto a un carrito:
+
+Para editar la cantidad de un producto de un carrito, solo puedes editar la cantidad de un producto en tu propio carrito, se debera tener el producto agregado y utilizar el metodo PUT en la ruta `http://localhost:PORT/api/cart/:cartid/edit/:productId` con cuerpo de la solicitud con el quantity deseado:
+
+```shell
+{
+  "quantity": 2
+}
+```
+
+## Eliminar un producto a un carrito:
+
+Para eliminar un producto de un carrito debes estar logeado y solo puedes eliminar el producto de tu propio carrito ademas de tener un producto agregado de antemano, deberas utilizar un metodo DELETE en la ruta `http://localhost:PORT/api/cart/:cartId/remove/:productId`
+
+## Finalizar compra del contenido del carrito:
+
+Para realizar la compra deberas estar logeado y tener por lo menos un producto en el carrito, sino no se concretara la compra del mismo, no creo que haga falta aclarar ya pero el carrito debe ser tu propio carrito, al final la compra se enviara un mail con un ticket describiendo detalles de la compra mas precio total, para hacerlo deberas utilizar un metodo POST en la ruta `http://localhost:PORT/api/cart/:cartId/purchase`
+
+## Despliegie de la aplicación
+
+Y por ultimo la aplicación se encuentra desplegada en Railway.app en el siguiente link:
 
 [https://trabajofinalback-production-139b.up.railway.app/](https://trabajofinalback-production-139b.up.railway.app/)

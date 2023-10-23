@@ -2,18 +2,48 @@
 
 ## Tabla de Contenidos
 
-1. [Instalación del proyecto](#instalación_del_proyecto)
-2. [Manejo de usuarios](#manejo_de_usuarios)
+- [Instalación del proyecto](#instalación-del-proyecto)
+- [Rutas del proyecto](#rutas-del-proyecto)
+- [Variables de entorno](#variables-de-entorno-a-configurar-en-un-env)
+- [Scripts para ejecutar la aplicacion](#scripts-para-ejecutar-la-aplicacion)
+  - [Development con persistencia de datos en mongo](#development-con-persistencia-de-datos-en-mongo)
+  - [Development con persistencia de datos en memoria](#development-con-persistencia-de-datos-en-memoria)
+  - [Production](#production)
+  - [QA](#qa)
+- [Documentación de swagger](#documentación-de-la-api)
+- [Manejo de usuarios](#manejo-de-usuarios)
+  - [Creacion de usuarios](#creacion-de-usuarios)
+  - [Login de usuarios](#login-de-usuarios)
+  - [Logout de usuarios](#logout-de-usuarios)
+  - [Cambio de rol de usuarios](#cambio-de-rol-de-usuarios)
+  - [Lista de usuarios](#lista-de-usuarios)
+  - [Eliminación de un usuario individual](#eliminación-de-un-usuario-individual)
+  - [Eliminación de usuarios inactivos](#eliminación-de-usuarios-inactivos)
+- [Manejo de productos](#manejo-de-productos)
+  - [Agregar un producto](#agregar-un-producto)
+  - [Obtener todos los productos](#obtener-todos-los-productos)
+  - [Editar un producto](#editar-un-producto)
+  - [Eliminar un producto](#eliminar-un-producto)
+- [Manejo de carritos](#manejo-de-carritos)
+  - [Creación de un carrito](#creación-de-un-carrito)
+  - [Obtener datos de un carrito](#obtener-datos-de-un-carrito)
+  - [Agregar producto a un carrito](#agregar-producto-a-un-carrito)
+  - [Editar cantidad de un producto a un carrito](#editar-cantidad-de-un-producto-a-un-carrito)
+  - [Eliminar un producto a un carrito](#eliminar-un-producto-a-un-carrito)
+  - [Finalizar compra del contenido del carrito](#finalizar-compra-del-contenido-del-carrito)
+- [Despliegue de la aplicación](#despliegue-de-la-aplicación)
 
-## Instalación del proyecto
+# Instalación del proyecto
 
 Clonar repositorio y realizar la instalación de todas las dependencias con el siguiente comando
 
 ```shell
-$ npm install
+npm install
 ```
 
-## Rutas del proyecto
+- [Volver a tabla de contenidos](#tabla-de-contenidos)
+
+# Rutas del proyecto
 
 El proyecto esta conformado por las siguientes rutas:
 
@@ -75,7 +105,9 @@ El proyecto esta conformado por las siguientes rutas:
 - `src/services`: Contiene la lógica de acceso a datos
 - `src/views`: Handlebars para renderizar vistas
 
-## Variables de entorno a configurar en un .env:
+- [Volver a tabla de contenidos](#tabla-de-contenidos)
+
+# Variables de entorno a configurar en un .env
 
 - `NODE_ENV=`: Especifica el entorno en el que se ejecuta la aplicación
 - `MONGO_DB_CONNECTION=`: Cadena de conexión a una base de datos MongoDB
@@ -84,7 +116,9 @@ El proyecto esta conformado por las siguientes rutas:
 - `EMAIL_USER=`: Usuario de gmail para usar mailer
 - `EMAIL_PASS=`: Clave para aplicaciones de gmail
 
-## Scripts para ejecutar la aplicacion:
+- [Volver a tabla de contenidos](#tabla-de-contenidos)
+
+# Scripts para ejecutar la aplicacion
 
 inicia el proyecto con el script standard en node
 
@@ -116,13 +150,17 @@ npm run start:production:mongo
 npm run start:test:mongo
 ```
 
-## Se recomiendo checkear la documentación de la API:
+- [Volver a tabla de contenidos](#tabla-de-contenidos)
+
+# Documentación de la API
 
 Para poder ver la documentación de swagger de la api ir a la url: `/api-docs`
 
 Dentro de la documentación de swagger estan los endpoints mas importantes
 
 Recomiendo empezar con la creacion de admin y usuario para realizar las pruebas necesarias igualmente gran mayoria del flujo de trabajo se encuentras en la documentacion de swagger
+
+- [Volver a tabla de contenidos](#tabla-de-contenidos)
 
 # Manejo de usuarios
 
@@ -204,6 +242,8 @@ Para eliminar un usuario deberas hacer un DELETE en `http://localhost:PORT/api/u
 
 Tambien podras eliminar los usuarios que esten inactivos durante cierta cantidad de tiempo, esto no esta limitado solo por admin es un metodo que puede que este bueno que se ejecute de manera automatica cada cierto periodo de tiempo, en el proyecto esta configurado para realizar luego de solo segundos inactivo por cuestiones prácticas pero se puede cambiar el valor al que se desee pueden ser meses. Utiliza el DELETE en `http://localhost:PORT/api/users`
 
+- [Volver a tabla de contenidos](#tabla-de-contenidos)
+
 # Manejo de productos
 
 ## Agregar un producto:
@@ -242,9 +282,11 @@ Para editar un producto deberas logear como "admin" o con rol "premium" si eres 
 
 Podras eliminar un producto de la base de datos como "admin" teniendo libertad de eliminar cualquier producto o como "premium" siendo owner del mismo, utiliza un metodo DELETE en la ruta `http://localhost:PORT/api/products/delete/:id`
 
+- [Volver a tabla de contenidos](#tabla-de-contenidos)
+
 # Manejo de carritos
 
-## Creacion de un carrito:
+## Creación de un carrito:
 
 La creacion del carrito esta ligada a una logica al momento de hacer el registro por lo que no hay que hacer una creacion manual de un carrito para un usuario, la creacion esta limitada para el "admin" al momento de registrarlo este no recibira un carrito
 
@@ -274,8 +316,12 @@ Para eliminar un producto de un carrito debes estar logeado y solo puedes elimin
 
 Para realizar la compra deberas estar logeado y tener por lo menos un producto en el carrito, sino no se concretara la compra del mismo, no creo que haga falta aclarar ya pero el carrito debe ser tu propio carrito, al final la compra se enviara un mail con un ticket describiendo detalles de la compra mas precio total, para hacerlo deberas utilizar un metodo POST en la ruta `http://localhost:PORT/api/cart/:cartId/purchase`
 
-## Despliegie de la aplicación
+- [Volver a tabla de contenidos](#tabla-de-contenidos)
+
+# Despliegue de la aplicación
 
 Y por ultimo la aplicación se encuentra desplegada en Railway.app en el siguiente link:
 
 [https://trabajofinalback-production-139b.up.railway.app/](https://trabajofinalback-production-139b.up.railway.app/)
+
+- [Volver a tabla de contenidos](#tabla-de-contenidos)

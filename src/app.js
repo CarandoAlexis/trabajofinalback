@@ -92,5 +92,5 @@ app.listen(port, () => {
 });
 
 app.get(`/${basePrefix}/alive`, (req, res) => {
-  return res.json({ message: `Api ejecutandose en ${process.env.NODE_ENV}` });
+  return res.json({ message: `Api ejecutandose en QA ${process.env.NODE_ENV}` });
 });

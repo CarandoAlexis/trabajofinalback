@@ -77,29 +77,41 @@ El proyecto esta conformado por las siguientes rutas:
 - `NODE_ENV=`: Especifica el entorno en el que se ejecuta la aplicación
 - `MONGO_DB_CONNECTION=`: Cadena de conexión a una base de datos MongoDB
 - `SESSION_SECRET=`: Clave secreta utilizada para firmar y proteger las sesiones de usuario con express-session
-- `PORT=`: Especifica el puerto en el correra la aplicación
+- `PORT=`: Especifica el puerto en el que correra la aplicación
 - `EMAIL_USER=`: Usuario de gmail para usar mailer
 - `EMAIL_PASS=`: Clave para aplicaciones de gmail
 
 ## Scripts para ejecutar la aplicacion
 
-npm run start inicia el proyecto con el script standard en node
+inicia el proyecto con el script standard en node
+
+```shell
+npm run start
+```
 
 ## Development con persistencia de datos en mongo
 
+```shell
 npm run start:development:mongo
+```
 
 ## Development con persistencia de datos en memoria
 
+```shell
 npm run start:development:memory
+```
 
 ## Production
 
+```shell
 npm run start:production:mongo
+```
 
 ## QA
 
+```shell
 npm run start:test:mongo
+```
 
 ## Se recomiendo checkear la documentación de la API
 
@@ -107,4 +119,12 @@ Para poder ver la documentación de swagger de la api ir a la url: `/api-docs`
 
 Dentro de la documentación de swagger estan los endpoints mas importantes
 
-Recomiendo empezar con la creacion de admin y usuario
+Recomiendo empezar con la creacion de admin y usuario para realizar las pruebas necesarias igualmente gran mayoria del flujo de trabajo se encuentras en la documentacion de swagger
+
+## Despliegie de la aplicacion
+
+La aplicacion se encuentra desplegada en Railway.app
+
+```shell
+https://trabajofinalback-production-139b.up.railway.app/
+```

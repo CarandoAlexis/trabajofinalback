@@ -126,5 +126,5 @@ Recomiendo empezar con la creacion de admin y usuario para realizar las pruebas 
 La aplicacion se encuentra desplegada en Railway.app
 
 ```shell
-[Link del deploy en Railway](https://trabajofinalback-production-139b.up.railway.app/)
+https://trabajofinalback-production-139b.up.railway.app/
 ```

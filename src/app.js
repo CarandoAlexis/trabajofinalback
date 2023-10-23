@@ -12,7 +12,7 @@ import authMdw from "./middleware/auth.middleware.js";
 import mongoStore from "connect-mongo";
 import passport from "passport";
 import initializePassport from "./config/passport-config.js";
-import { mongoUrl, sessionSecret, serverPort } from "./config/config.js";
+import { mongoUrl, sessionSecret, serverPort, basePrefix } from "./config/config.js";
 import cartRouter from "./routes/carts.router.js";
 import errorHandler from "./middleware/errorHandler.js";
 import logger from "./config/logger.js";
@@ -89,4 +89,8 @@ const port = serverPort || 8080;
 app.listen(port, () => {
   displayRoutes(app);
   logger.info(`Server listening on port ${port}`);
+});
+
+app.get(`/${basePrefix}/alive`, (req, res) => {
+  return res.json({ message: `Api ejecutandose en ${process.env.NODE_ENV}` });
 });

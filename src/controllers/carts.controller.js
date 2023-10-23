@@ -83,6 +83,12 @@ const purchaseCart = async (req, res) => {
         .json({ status: "error", message: "Carrito no encontrado" });
     }
 
+    if (userCart.products.length === 0) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "El carrito está vacío. No se puede realizar la compra." });
+    }
+
     const productsWithDetails = await Promise.all(
       userCart.products.map(async (product) => {
         const productInfo = await Product.findById(product.productId);

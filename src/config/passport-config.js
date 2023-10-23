@@ -35,7 +35,7 @@ const initializePassport = () => {
     })
   );
 
-
+  /*
   passport.use(
     "github",
     new GitHubStrategy(
@@ -69,7 +69,7 @@ const initializePassport = () => {
       }
     )
   );
-
+*/
   passport.serializeUser((user, done) => {
     return done(null, user._id);
   });

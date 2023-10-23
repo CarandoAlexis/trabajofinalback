@@ -2,8 +2,8 @@
 
 ## Tabla de Contenidos
 
-1. [Instalación del proyecto](#Instalación_del_proyecto)
-2. [Manejo de usuarios](#Manejo_de_usuarios)
+1. [Instalación del proyecto](#instalación_del_proyecto)
+2. [Manejo de usuarios](#manejo_de_usuarios)
 
 ## Instalación del proyecto
 
